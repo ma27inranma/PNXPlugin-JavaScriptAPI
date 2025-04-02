@@ -11,11 +11,12 @@ import java.nio.file.Path;
 import cn.nukkit.Server;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Logger;
+import ma27inranma.javascript_api.command.CommandReloadScript;
 
 public class JavaScriptApiPlugin extends PluginBase {
-  public Logger logger;
-  public JavaScriptApiPlugin instance;
-  public Server server;
+  public static Logger logger;
+  public static JavaScriptApiPlugin instance;
+  public static Server server;
 
   Context context;
 
@@ -24,6 +25,27 @@ public class JavaScriptApiPlugin extends PluginBase {
     this.instance = this;
     this.logger = getLogger();
     this.server = getServer();
+
+    this.context = Context.create();
+
+    reloadScripts();
+  }
+
+  @Override
+  public void onEnable() {
+    getServer().getCommandMap().register("reloadscript", new CommandReloadScript());
+  }
+
+  @Override
+  public void onDisable() {
+    
+  }
+
+  public void reloadScripts(){
+    if(this.context != null){
+      this.context.close(true);
+      this.context = null;
+    }
 
     this.context = Context.create();
 
@@ -45,15 +67,5 @@ public class JavaScriptApiPlugin extends PluginBase {
 
       this.context.eval("js", content);
     };
-  }
-
-  @Override
-  public void onEnable() {
-    
-  }
-
-  @Override
-  public void onDisable() {
-    
   }
 }
