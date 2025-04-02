@@ -1,0 +1,5 @@
+name: jsapi
+version: 1.0.0
+author: ma27inranma
+main: ma27inranma.javascript_api.JavaScriptApiPlugin
+api: 2.0.0

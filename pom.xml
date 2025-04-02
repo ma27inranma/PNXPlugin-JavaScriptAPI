@@ -65,6 +65,18 @@
             <scope>system</scope>
             <systemPath>G:\storage\projects\LIB\Java\ma27inranma\ESON\target\eson-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
+
+        <dependency>
+            <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>polyglot</artifactId>
+            <version>23.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>js</artifactId>
+            <version>23.1.2</version>
+            <type>pom</type>
+        </dependency>
     </dependencies>
 
     <build>
