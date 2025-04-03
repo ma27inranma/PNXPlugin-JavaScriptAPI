@@ -77,6 +77,11 @@
             <version>23.1.2</version>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>graal-sdk</artifactId>
+            <version>23.1.2</version>
+        </dependency>
     </dependencies>
 
     <build>

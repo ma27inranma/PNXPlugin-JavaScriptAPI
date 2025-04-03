@@ -12,6 +12,8 @@ import cn.nukkit.Server;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Logger;
 import ma27inranma.javascript_api.command.CommandReloadScript;
+import ma27inranma.javascript_api.event.EventBus;
+import ma27inranma.javascript_api.event.EventListener;
 
 public class JavaScriptApiPlugin extends PluginBase {
   public static Logger logger;
@@ -34,6 +36,8 @@ public class JavaScriptApiPlugin extends PluginBase {
   @Override
   public void onEnable() {
     getServer().getCommandMap().register("reloadscript", new CommandReloadScript());
+
+    getServer().getPluginManager().registerEvents(new EventListener(), this);
   }
 
   @Override
@@ -47,7 +51,7 @@ public class JavaScriptApiPlugin extends PluginBase {
       this.context = null;
     }
 
-    this.context = Context.create();
+    this.context = Context.newBuilder("js").allowAllAccess(true).build();
 
     File scriptMainFolder = Path.of("./scripts/js_main/").toFile();
     if(!scriptMainFolder.exists()) scriptMainFolder.mkdirs();
@@ -55,6 +59,8 @@ public class JavaScriptApiPlugin extends PluginBase {
       getLogger().error(scriptMainFolder.getAbsolutePath() + " Must be a Directory!");
       return;
     }
+
+    registerApis(this.context);
 
     for(File file : scriptMainFolder.listFiles()){
       String content = "";
@@ -65,7 +71,17 @@ public class JavaScriptApiPlugin extends PluginBase {
         return;
       }
 
-      this.context.eval("js", content);
+      try{
+        this.context.eval("js", content);
+      }catch(PolyglotException e){
+        e.printStackTrace();
+      }
     };
+  }
+
+  public void registerApis(Context context){
+    Value jsRoot = context.getBindings("js");
+
+    jsRoot.putMember("Api", new ApiRoot());
   }
 }
