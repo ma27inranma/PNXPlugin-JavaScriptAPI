@@ -1,6 +1,7 @@
 package ma27inranma.javascript_api;
 
 import org.graalvm.polyglot.*;
+import org.graalvm.polyglot.io.IOAccess;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class JavaScriptApiPlugin extends PluginBase {
       this.context = null;
     }
 
-    this.context = Context.newBuilder("js").allowAllAccess(true).build();
+    this.context = Context.newBuilder("js").allowAllAccess(true).allowIO(IOAccess.ALL).option("js.esm-eval-returns-exports", "true").build();
 
     File scriptMainFolder = Path.of("./scripts/js_main/").toFile();
     if(!scriptMainFolder.exists()) scriptMainFolder.mkdirs();
@@ -72,8 +73,8 @@ public class JavaScriptApiPlugin extends PluginBase {
       }
 
       try{
-        this.context.eval("js", content);
-      }catch(PolyglotException e){
+        this.context.eval(Source.newBuilder("js", content, file.toPath().toAbsolutePath().toString()).uri(file.toPath().toAbsolutePath().toUri()).mimeType("application/javascript+module")/*this is esmodule*/.build());
+      }catch(Exception e){
         e.printStackTrace();
       }
     };
