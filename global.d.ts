@@ -60,6 +60,8 @@ declare global {
     private constructor();
   
     public getLocation(): Vector3;
+
+    public getInventory?(): RawInventory;
   }
   
   class Player extends Entity {
@@ -67,5 +69,22 @@ declare global {
   
     public getNeme(): string;
     public getNameTag(): string;
+  }
+
+  class RawInventory {
+    private constructor();
+
+    public getItem(slot: number): RawItem;
+    public getItemInHand?(): RawItem;
+    public setItem(slot: number, item: RawItem): void;
+    public setItemInHand(item: RawItem): void;
+  }
+
+  class RawItem {
+    private constructor();
+
+    public getTypeId(): string;
+
+    public clone(): RawItem;
   }
 }

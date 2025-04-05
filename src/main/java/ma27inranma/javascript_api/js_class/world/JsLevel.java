@@ -18,4 +18,8 @@ public class JsLevel {
     
     return new JsBlock(this.level.getBlock(vec.toVector3()));
   }
+
+  public Level getRawLevel(){
+    return this.level;
+  }
 }

@@ -21,4 +21,8 @@ public class JsBlock {
   public String getTypeId(){
     return this.block.getId();
   }
+
+  public Block getRawBlock(){
+    return this.block;
+  }
 }
