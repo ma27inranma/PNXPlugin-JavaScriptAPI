@@ -14,7 +14,7 @@ import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Logger;
 import ma27inranma.javascript_api.command.CommandReloadScript;
 import ma27inranma.javascript_api.event.EventListener;
-import ma27inranma.javascript_api.js_class.util.LocationUtils;
+import ma27inranma.javascript_api.js_class.util.JsLocationUtils;
 
 public class JavaScriptApiPlugin extends PluginBase {
   public static Logger logger;
@@ -84,6 +84,6 @@ public class JavaScriptApiPlugin extends PluginBase {
     Value jsRoot = context.getBindings("js");
 
     jsRoot.putMember("Api", new ApiRoot());
-    jsRoot.putMember("Locations", new LocationUtils());
+    jsRoot.putMember("Locations", new JsLocationUtils());
   }
 }

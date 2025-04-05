@@ -55,14 +55,14 @@ declare global {
   class Level {
     private constructor();
 
-    public getBlock(pos: Vector3): Block;
+    public getBlock(pos: Location): Block;
   }
   
   class Block {
     private constructor();
 
     public getLocation(): Location;
-    public getTypeId(): string;
+    public getId(): string;
   }
   
   // Entiteis Begin
@@ -105,6 +105,6 @@ declare global {
   class Locations {
     private constructor();
 
-    public fromVector3(vec: Vector3): Location;
+    public static fromVector3(vec: Vector3): Location;
   }
 }
