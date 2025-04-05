@@ -8,7 +8,6 @@ import org.graalvm.polyglot.HostAccess;
 import ma27inranma.javascript_api.event.event_impl.PlayerChatEvent;
 
 public class EventBus {
-  //TODO: make this Weak or cleanup at some point
   public static ArrayList<EventBus> existingEventBusses = new ArrayList<>();
 
   public static void emit(String eventName, Object object){

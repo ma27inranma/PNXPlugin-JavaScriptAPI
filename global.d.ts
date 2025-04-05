@@ -8,6 +8,8 @@ declare global {
     private constructor();
   
     public getEvents(): EventBus;
+    public getLevel(name: string): Level;
+    public getDefaultLevel(): Level;
   }
   
   class EventBus {
@@ -29,16 +31,27 @@ declare global {
     public player: Player;
   }
   
-  class Location {
-    public constructor(x: number, y: number, z: number);
-  
-    public x: number;
-    public y: number;
-    public z: number;
+  interface Vector3 {
+    x: number,
+    y: number,
+    z: number
   }
 
   interface EventType {
     PlayerChat: PlayerChatEventInfo
+  }
+
+  class Level {
+    private constructor();
+
+    public getBlock(pos: Vector3): Block;
+  }
+  
+  class Block {
+    private constructor();
+
+    public getLocation(): Vector3;
+    public getTypeId(): string;
   }
   
   // Entiteis Begin
@@ -46,7 +59,7 @@ declare global {
   class Entity {
     private constructor();
   
-    public getLocation(): Location;
+    public getLocation(): Vector3;
   }
   
   class Player extends Entity {
