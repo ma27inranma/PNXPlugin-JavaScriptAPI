@@ -17,12 +17,17 @@ public class Event {
   }
 
   public void emit(Object data){
-    this.listeners.forEach(listener -> {
+    for (Value listener : new ArrayList<>(this.listeners)) {
       try{
         listener.execute(data);
       }catch(PolyglotException e){
+        if(e.getMessage().equals("Context execution was cancelled.")){
+          this.listeners.remove(listener);
+          return;
+        }
+
         e.printStackTrace();
       }
-    });
+    }
   }
 }
