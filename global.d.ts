@@ -21,7 +21,7 @@ declare global {
   class EventSignal<T extends keyof EventType> {
     private constructor();
   
-    public subscribe(callback: (data: EventType[T]) => void);
+    public subscribe(callback: (data: EventType[T]) => void): any;
   }
   
   class PlayerChatEventInfo {
@@ -37,6 +37,17 @@ declare global {
     z: number
   }
 
+  class Location implements Vector3 {
+    private constructor();
+
+    public getX(): number;
+    public getY(): number;
+    public getZ(): number;
+    public getChunkX(): number;
+    public getChunkY(): number;
+    public getChunkZ(): number;
+  }
+
   interface EventType {
     PlayerChat: PlayerChatEventInfo
   }
@@ -50,7 +61,7 @@ declare global {
   class Block {
     private constructor();
 
-    public getLocation(): Vector3;
+    public getLocation(): Location;
     public getTypeId(): string;
   }
   
@@ -59,9 +70,9 @@ declare global {
   class Entity {
     private constructor();
   
-    public getLocation(): Vector3;
+    public getLocation(): Location;
 
-    public getInventory?(): RawInventory;
+    public getInventory?(): Inventory;
   }
   
   class Player extends Entity {
@@ -71,20 +82,29 @@ declare global {
     public getNameTag(): string;
   }
 
-  class RawInventory {
+  class Inventory {
     private constructor();
 
-    public getItem(slot: number): RawItem;
-    public getItemInHand?(): RawItem;
-    public setItem(slot: number, item: RawItem): void;
-    public setItemInHand(item: RawItem): void;
+    public getItem(slot: number): Item;
+    public getItemInHand?(): Item;
+    public setItem(slot: number, item: Item): void;
+    public setItemInHand(item: Item): void;
   }
 
-  class RawItem {
+  class Item {
     private constructor();
 
     public getTypeId(): string;
 
-    public clone(): RawItem;
+    public clone(): Item;
+  }
+
+
+  //
+
+  class Locations {
+    private constructor();
+
+    public fromVector3(vec: Vector3): Location;
   }
 }

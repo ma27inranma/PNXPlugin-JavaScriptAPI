@@ -1,7 +1,6 @@
 package ma27inranma.javascript_api.event.info;
 
 import cn.nukkit.Player;
-import ma27inranma.javascript_api.js_class.entity.player.PolyglotPlayer;
 
 public class PlayerChatInfo {
   public final String message;

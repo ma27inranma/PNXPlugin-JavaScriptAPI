@@ -4,7 +4,6 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerChatEvent;
 import ma27inranma.javascript_api.event.info.PlayerChatInfo;
-import ma27inranma.javascript_api.js_class.entity.player.PolyglotPlayer;
 
 public class EventListener implements Listener {
   @EventHandler
