@@ -123,6 +123,6 @@ public class ItemDefinition {
     pluginLoader.loadClass("ma27inranma.javascript_api.registry.interceptors.item.InterceptorIsHoe");
     pluginLoader.loadClass("ma27inranma.javascript_api.registry.interceptors.item.InterceptorGetDefinition");
 
-    return buddy.make().load(JavaScriptApiPlugin.instance.getPluginClassLoader()).getLoaded();
+    return buddy.make().load(pluginLoader, ClassLoadingStrategy.Default.INJECTION).getLoaded(); // somehow it used its own class loader, so i need to inject it to prevent it
   }
 }
