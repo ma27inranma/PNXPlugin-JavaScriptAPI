@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.graalvm.polyglot.HostAccess;
 
 import ma27inranma.javascript_api.event.event_impl.PlayerChatEvent;
+import ma27inranma.javascript_api.event.event_impl.RegistriesEvent;
 
 public class EventBus {
   public static ArrayList<EventBus> existingEventBusses = new ArrayList<>();
@@ -24,6 +25,7 @@ public class EventBus {
 
   public EventBus(){
     events.put("PlayerChat", new PlayerChatEvent());
+    events.put("Registries", new RegistriesEvent());
 
     existingEventBusses.add(this);
   }

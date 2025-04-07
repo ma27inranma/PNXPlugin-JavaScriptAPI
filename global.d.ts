@@ -30,6 +30,44 @@ declare global {
     public message: string;
     public player: Player;
   }
+
+  class RegistriesInfo {
+    private constructor();
+
+    public register(typeId: string, def: ItemDefinition): void;
+  }
+
+  interface EventType {
+    PlayerChat: PlayerChatEventInfo,
+    Registries: RegistriesInfo
+  }
+
+  interface ItemDefinition {
+    typeId?: string;
+    isAxe?: boolean;
+    isPickaxe?: boolean;
+    isShovel?: boolean;
+    isSword?: boolean;
+    isHoe?: boolean;
+    name?: string;
+    creativeCategory?: keyof CreativeCategoryEnum;
+    texture?: string;
+    itemType?: keyof ItemTypeEnum;
+  }
+
+  interface CreativeCategoryEnum {
+    None: null,
+    Equipment: null,
+    Items: null,
+    Construction: null,
+    Nature: null
+  }
+
+  interface ItemTypeEnum {
+    Item: null,
+    Tool: null,
+    Armor: null
+  }
   
   interface Vector3 {
     x: number,
@@ -46,10 +84,6 @@ declare global {
     public getChunkX(): number;
     public getChunkY(): number;
     public getChunkZ(): number;
-  }
-
-  interface EventType {
-    PlayerChat: PlayerChatEventInfo
   }
 
   class Level {

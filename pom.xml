@@ -82,6 +82,12 @@
             <artifactId>graal-sdk</artifactId>
             <version>23.1.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 
     <build>

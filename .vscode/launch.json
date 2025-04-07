@@ -22,6 +22,8 @@
         "-XX:+UseG1GC",
         "-XX:+ZGenerational",
         "-XX:+UseStringDeduplication",
+        "-XX:+AllowEnhancedClassRedefinition",
+        "-XX:HotswapAgent=fatjar",
         "--add-opens",
         "java.base/java.lang=ALL-UNNAMED",
         "--add-opens",
