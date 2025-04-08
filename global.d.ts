@@ -34,7 +34,8 @@ declare global {
   class RegistriesInfo {
     private constructor();
 
-    public register(typeId: string, def: ItemDefinition): void;
+    public registerItem(typeId: string, def: ItemDefinition): void;
+    public registerBlock(typeId: string, def: BlockDefinition): void;
   }
 
   interface EventType {
@@ -43,7 +44,6 @@ declare global {
   }
 
   interface ItemDefinition {
-    typeId?: string;
     isAxe?: boolean;
     isPickaxe?: boolean;
     isShovel?: boolean;
@@ -53,6 +53,14 @@ declare global {
     creativeCategory?: keyof CreativeCategoryEnum;
     texture?: string;
     itemType?: keyof ItemTypeEnum;
+  }
+
+  interface BlockDefinition {
+    geometry: string;
+    materials: BlockMaterialDefinition[];
+    breakTime: number;
+    blockType?: keyof BlockTypeEnum;
+    states?: BlockStateDefinition
   }
 
   interface CreativeCategoryEnum {
@@ -67,6 +75,22 @@ declare global {
     Item: null,
     Tool: null,
     Armor: null
+  }
+
+  interface BlockTypeEnum {
+    Solid: null,
+    Transparent: null
+  }
+
+  interface BlockMaterialDefinition {
+    texture: string,
+    material: string
+  }
+
+  interface BlockStateDefinition {
+    typeId: string;
+    rangeStart: number;
+    rangeEnd: number;
   }
   
   interface Vector3 {
