@@ -1,9 +1,6 @@
-package ma27inranma.javascript_api.registry;
+package ma27inranma.javascript_api.registry.item;
 
 import java.lang.reflect.Modifier;
-import java.security.ProtectionDomain;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 import cn.nukkit.item.Item;
@@ -22,7 +19,6 @@ import ma27inranma.javascript_api.registry.interceptors.item.InterceptorIsSword;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import net.bytebuddy.dynamic.loading.PackageDefinitionStrategy;
 import net.bytebuddy.implementation.MethodCall;
 import net.bytebuddy.implementation.MethodDelegation;
 

@@ -1,4 +1,4 @@
-package ma27inranma.javascript_api.registry;
+package ma27inranma.javascript_api.registry.item;
 
 import cn.nukkit.item.customitem.data.CreativeCategory;
 
