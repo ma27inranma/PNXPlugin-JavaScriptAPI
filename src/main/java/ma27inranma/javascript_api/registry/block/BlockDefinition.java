@@ -1,7 +1,6 @@
 package ma27inranma.javascript_api.registry.block;
 
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,11 +11,13 @@ import cn.nukkit.block.BlockProperties;
 import cn.nukkit.block.BlockSolid;
 import cn.nukkit.block.BlockState;
 import cn.nukkit.block.BlockTransparent;
+import cn.nukkit.block.customblock.CustomBlock;
 import cn.nukkit.block.property.type.BlockPropertyType;
 import cn.nukkit.registry.RegisterException;
 import ma27inranma.javascript_api.JavaScriptApiPlugin;
 import ma27inranma.javascript_api.registry.interceptors.block.InterceptorGetBlockDefinition;
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.description.field.FieldDescription;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -31,12 +32,15 @@ import net.bytebuddy.implementation.bytecode.StackManipulation;
 import net.bytebuddy.implementation.bytecode.TypeCreation;
 import net.bytebuddy.implementation.bytecode.collection.ArrayAccess;
 import net.bytebuddy.implementation.bytecode.collection.ArrayFactory;
+import net.bytebuddy.implementation.bytecode.constant.ClassConstant;
 import net.bytebuddy.implementation.bytecode.constant.IntegerConstant;
 import net.bytebuddy.implementation.bytecode.constant.TextConstant;
 import net.bytebuddy.implementation.bytecode.member.FieldAccess;
 import net.bytebuddy.implementation.bytecode.member.MethodInvocation;
 import net.bytebuddy.jar.asm.MethodVisitor;
+import net.bytebuddy.jar.asm.Opcodes;
 import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.jar.asm.Type;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
@@ -154,65 +158,49 @@ public class BlockDefinition {
   public Class<? extends Block> buildClassDef() throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException{
     BlockProperties properties = new BlockProperties(this.typeId, new BlockPropertyType[]{});
 
-    DynamicType.Builder<? extends Block> buddy = new ByteBuddy().subclass(this.subclass);
+    DynamicType.Builder<? extends Block> buddy = new ByteBuddy().subclass(this.subclass).implement(CustomBlock.class);
 
-    buddy = buddy.defineField("PROPERTIES", BlockProperties.class, Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL).initializer(new ByteCodeAppender() {
-      /*
-        ICONST_0
-        ANEWARRAY BlockPropertyType
-        NEW BlockProperties
-        DUP
-        LDC "typeId"
-        ICONST_0
-        ANEWARRAY BlockPropertyType
-        INVOKESPECIAL BlockProperties.constructor(String, BlockPropertyType[])
-        PUTSTATIC subclass.PROPERTIES
-       */
-
+    buddy = buddy.defineField("PROPERTIES", BlockProperties.class, Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL)
+    .initializer(new ByteCodeAppender() {
       @Override
-      public Size apply(MethodVisitor visitor, Context context, MethodDescription methodDescription) {
-        TypeDescription propertyTypeDesc = new TypeDescription.ForLoadedType(BlockPropertyType.class);
-    
-        // new BlockPropertyType[0]
-        StackManipulation newArray = new StackManipulation.Compound(
-          IntegerConstant.forValue(0), // ICONST_0
-          ArrayFactory.forType(TypeDescription.ForLoadedType.of(BlockPropertyType.class).asGenericType())
-            .withValues(Collections.emptyList()) // ANEWARRAY BlockPropertyType
-        );
-    
-        // new BlockProperties(typeId, new BlockPropertyType[0])
+      public ByteCodeAppender.Size apply(MethodVisitor visitor, Context context, MethodDescription methodDescription) {
         StackManipulation blockPropsCtorCall = new StackManipulation.Compound(
-          TypeCreation.of(new TypeDescription.ForLoadedType(BlockProperties.class)), // NEW BlockProperties
-          Duplication.SINGLE, // DUP
-          new TextConstant(typeId), // LDC "typeId"
-          newArray, // ICONST_0 + ANEWARRAY BlockPropertyType
+          // new BlockProperties
+          TypeCreation.of(new TypeDescription.ForLoadedType(BlockProperties.class)), //NEW
+          Duplication.SINGLE, //DUP
+
+          new TextConstant(typeId), //LDC
+
+          ArrayFactory.forType(new TypeDescription.ForLoadedType(BlockPropertyType.class).asGenericType())
+            .withValues(Collections.emptyList()), //ICONST_0, ANEWARRAY
+
           MethodInvocation.invoke(
             new TypeDescription.ForLoadedType(BlockProperties.class)
               .getDeclaredMethods()
               .filter(ElementMatchers.isConstructor())
-              .filter(ElementMatchers.takesArguments(int.class, BlockPropertyType[].class))
+              .filter(ElementMatchers.takesArguments(String.class, BlockPropertyType[].class))
               .getOnly()
-          ), // INVOKESPECIAL BlockProperties.constructor(String, BlockPropertyType[])
-          FieldAccess.forField(
-            new TypeDescription.ForLoadedType(subclass)
-              .getDeclaredFields()
-              .filter(ElementMatchers.named("PROPERTIES"))
-              .getOnly()
-          ).write() // PUTSTATIC subclass.PROPERTIES : BlockProperties
+          ) //INVOKESPECIAL
         );
-    
-        StackManipulation.Size newArraySize = newArray.apply(visitor, context);
-        StackManipulation.Size blockPropsCtorCallSize = blockPropsCtorCall.apply(visitor, context);
-    
-        return new Size(
-          newArraySize.getMaximalSize() + blockPropsCtorCallSize.getMaximalSize(),
+
+        StackManipulation.Size stackSize = blockPropsCtorCall.apply(visitor, context);
+
+        // Set static field PROPERTIES
+        visitor.visitFieldInsn(Opcodes.PUTSTATIC,
+          context.getInstrumentedType().getInternalName(),
+          "PROPERTIES",
+          Type.getDescriptor(BlockProperties.class)
+        ); //PUTSTATIC
+
+        return new ByteCodeAppender.Size(
+          stackSize.getMaximalSize(),
           methodDescription.getStackSize()
         );
       }
     });
 
     // buddy = buddy.defineConstructor(Modifier.PUBLIC).withParameters(new Type[0]).intercept(MethodCall.invoke(this.subclass.getConstructor(BlockState.class)).withField("PROPERTIES"));
-    buddy = buddy.defineConstructor(Modifier.PUBLIC).withParameters(new Type[0]).intercept(MethodCall.invoke(this.subclass.getConstructor(BlockState.class)).with(properties.getDefaultState()));
+    buddy = buddy.defineConstructor(Modifier.PUBLIC).withParameters(new java.lang.reflect.Type[0]).intercept(MethodCall.invoke(this.subclass.getConstructor(BlockState.class)).with(properties.getDefaultState()));
     // buddy = buddy.defineConstructor(Modifier.PUBLIC).withParameters(BlockState.class).intercept(MethodCall.invoke(this.subclass.getConstructor(BlockState.class)).withArgument(0));
 
     buddy = buddy.method(named("getProperties")).intercept(FixedValue.value(properties));
@@ -222,7 +210,7 @@ public class BlockDefinition {
     ClassLoader pluginLoader = JavaScriptApiPlugin.instance.getPluginClassLoader();
 
     Class<? extends Block> blockClass = buddy.make().load(pluginLoader, ClassLoadingStrategy.Default.INJECTION).getLoaded(); // somehow it used its own class loader, so i need to inject it to prevent it
-    blockClass.getField("PROPERTIES").set(null, properties); // here
+    // blockClass.getField("PROPERTIES").set(null, properties); // here
 
     return blockClass;
   }

@@ -57,7 +57,7 @@ declare global {
 
   interface BlockDefinition {
     geometry: string;
-    materials: BlockMaterialDefinition[];
+    materials: Record<string, BlockMaterialDefinition>;
     breakTime: number;
     blockType?: keyof BlockTypeEnum;
     states?: BlockStateDefinition

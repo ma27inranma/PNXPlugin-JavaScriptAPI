@@ -12,7 +12,7 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}/run",
       "classPaths": [ // is -cp
-        "g:/storage/projects/EnchantedMCGames/PowerNukkitX/build/powernukkitx.jar",
+        "g:/storage/projects/EnchantedMCGames/PowerNukkitX/build/PNX Server-master1-bds_compatible.jar",
         "G:/app/mcserver/pnx/sc/TowerDefense0/libs/*",
         "${workspaceFolder}/target/classes"
       ],
