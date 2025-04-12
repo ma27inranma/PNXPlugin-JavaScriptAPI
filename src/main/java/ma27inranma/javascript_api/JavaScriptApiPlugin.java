@@ -56,6 +56,8 @@ public class JavaScriptApiPlugin extends PluginBase {
       this.context = null;
     }
 
+    EventBus.reload();
+
     this.context = Context.newBuilder("js").allowAllAccess(true).allowIO(IOAccess.ALL).option("js.esm-eval-returns-exports", "true").build();
 
     File scriptMainFolder = Path.of("./scripts/js_main/").toFile();

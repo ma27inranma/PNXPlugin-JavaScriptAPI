@@ -10,6 +10,8 @@ declare global {
     public getEvents(): EventBus;
     public getLevel(name: string): Level;
     public getDefaultLevel(): Level;
+    
+    public getInteractionActionEnum(): PlayerInteractActionEnum;
   }
   
   class EventBus {
@@ -38,9 +40,44 @@ declare global {
     public registerBlock(typeId: string, def: BlockDefinition): void;
   }
 
+  class BlockBreakInfo {
+    private constructor();
+
+    public getPlayer(): Player;
+    public getBlock(): Block;
+    public getItem(): Item;
+  }
+
+  class BlockPlaceInfo {
+    private constructor();
+
+    public getPlayer(): Player;
+    public getBlock(): Block;
+  }
+
+  class PlayerInteractInfo {
+    private constructor();
+
+    public getPlayer(): Player;
+    public getAction(): PlayerInteractActionEnum;
+    public getItem(): Item;
+    public getBlock(): Block | undefined;
+  }
+
+  interface PlayerInteractActionEnum {
+    LEFT_CLICK_BLOCK: "LEFT_CLICK_BLOCK";
+    LEFT_CLICK_AIR: "LEFT_CLICK_AIR";
+    RIGHT_CLICK_BLOCK: "RIGHT_CLICK_BLOCK";
+    RIGHT_CLICK_AIR: "RIGHT_CLICK_AIR";
+    PHYSICAL: "PHYSICAL";
+  }
+
   interface EventType {
     PlayerChat: PlayerChatEventInfo,
-    Registries: RegistriesInfo
+    Registries: RegistriesInfo,
+    BlockBreak: BlockBreakInfo,
+    BlockPlace: BlockPlaceInfo,
+    PlayerInteract: PlayeriNteract
   }
 
   interface ItemDefinition {
@@ -152,7 +189,7 @@ declare global {
   class Item {
     private constructor();
 
-    public getTypeId(): string;
+    public getId(): string;
 
     public clone(): Item;
   }

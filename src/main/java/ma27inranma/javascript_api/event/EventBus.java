@@ -21,11 +21,18 @@ public class EventBus {
     });
   }
 
+  public static void reload(){
+    existingEventBusses = new ArrayList<>();
+  }
+
   public HashMap<String, Event> events = new HashMap<>();
 
   public EventBus(){
     events.put("PlayerChat", new PlayerChatEvent());
     events.put("Registries", new RegistriesEvent());
+    events.put("BlockBreak", new Event());
+    events.put("BlockPlace", new Event());
+    events.put("PlayerInteract", new Event());
 
     existingEventBusses.add(this);
   }
