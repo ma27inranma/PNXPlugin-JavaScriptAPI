@@ -9,9 +9,16 @@ declare global {
   
     public getEvents(): EventBus;
     public getLevel(name: string): Level;
+    public getServer(): Server;
     public getDefaultLevel(): Level;
     
     public getInteractionActionEnum(): PlayerInteractActionEnum;
+  }
+
+  class Server {
+    private constructor();
+
+    public executeCommand(sender: CommandSender, command: string): number;
   }
   
   class EventBus {
@@ -151,13 +158,27 @@ declare global {
     private constructor();
 
     public getBlock(pos: Location): Block;
+    public setBlock(pos: Location, block: Block): void;
+    public loadChunk(x: number, z: number): void
   }
   
   class Block {
+    public static get(typeId: string): Block;
+
     private constructor();
 
     public getLocation(): Location;
     public getId(): string;
+    public getLevel(): Level;
+    public getLevelBlockEntity(): BlockEntity | undefined;
+    public getBlockEntity?(): BlockEntity | null;
+    public getOrCreateBlockEntity?(): BlockEntity;
+  }
+
+  class BlockEntity {
+    private constructor();
+
+    public getInventory?(): Inventory;
   }
   
   // Entiteis Begin
@@ -183,10 +204,13 @@ declare global {
     public getItem(slot: number): Item;
     public getItemInHand?(): Item;
     public setItem(slot: number, item: Item): void;
-    public setItemInHand(item: Item): void;
+    public setItemInHand?(item: Item): void;
+    public getSize(): number;
   }
 
   class Item {
+    public static get(typeId: string): Item;
+
     private constructor();
 
     public getId(): string;
@@ -201,5 +225,16 @@ declare global {
     private constructor();
 
     public static fromVector3(vec: Vector3): Location;
+  }
+
+  class Commands {
+    private constructor();
+
+    public static getCommandSenderAsAt(entity: Entity, location: Location): CommandSender;
+    public static getConsoleCommandSender(): CommandSender;
+  }
+
+  class CommandSender {
+    private constructor();
   }
 }
