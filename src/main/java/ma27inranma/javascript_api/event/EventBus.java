@@ -33,6 +33,8 @@ public class EventBus {
     events.put("BlockBreak", new Event());
     events.put("BlockPlace", new Event());
     events.put("PlayerInteract", new Event());
+    events.put("Loaded", new Event()); // onEnable
+    events.put("Unload", new Event()); // onDisable
 
     existingEventBusses.add(this);
   }

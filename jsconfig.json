@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "baseUrl": "scripts"
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": ["scripts", "global.d.ts"]
+}

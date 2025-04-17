@@ -79,12 +79,18 @@ declare global {
     PHYSICAL: "PHYSICAL";
   }
 
+  class NullEvent {
+    private constructor();
+  }
+
   interface EventType {
     PlayerChat: PlayerChatEventInfo,
     Registries: RegistriesInfo,
     BlockBreak: BlockBreakInfo,
     BlockPlace: BlockPlaceInfo,
-    PlayerInteract: PlayeriNteract
+    PlayerInteract: PlayerInteractInfo,
+    Loaded: NullEvent,
+    Unload: NullEvent
   }
 
   interface ItemDefinition {

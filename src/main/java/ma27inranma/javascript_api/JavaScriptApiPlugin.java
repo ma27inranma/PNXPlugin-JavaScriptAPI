@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
@@ -26,6 +27,8 @@ public class JavaScriptApiPlugin extends PluginBase {
   public static Logger logger;
   public static JavaScriptApiPlugin instance;
   public static Server server;
+
+  public boolean isEnabled = false;
 
   Context context;
 
@@ -47,15 +50,20 @@ public class JavaScriptApiPlugin extends PluginBase {
     getServer().getCommandMap().register("reloadscript", new CommandReloadScript());
 
     getServer().getPluginManager().registerEvents(new EventListener(), this);
+
+    this.isEnabled = true;
+    EventBus.emit("Loaded", new HashMap<>());
   }
 
   @Override
   public void onDisable() {
-    
+    EventBus.emit("Unload", new HashMap<>());
   }
 
   public void reloadScripts(){
     if(this.context != null){
+      EventBus.emit("Unload", new HashMap<>());
+
       this.context.close(true);
       this.context = null;
     }
@@ -88,6 +96,10 @@ public class JavaScriptApiPlugin extends PluginBase {
         e.printStackTrace();
       }
     };
+
+    if(this.isEnabled){
+      EventBus.emit("Loaded", new HashMap<>());
+    }
   }
 
   public void registerApis(Context context){
