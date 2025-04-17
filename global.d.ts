@@ -261,6 +261,6 @@ declare global {
   export const Class: ClassUtil;
 
   class JavaClass {
-    public static static: any;
+    public static: any;
   }
 }
