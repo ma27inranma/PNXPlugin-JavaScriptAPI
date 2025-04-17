@@ -163,7 +163,7 @@ declare global {
   }
   
   class Block {
-    public static get(typeId: string): Block;
+    public static static: BlockStatic;
 
     private constructor();
 
@@ -173,6 +173,10 @@ declare global {
     public getLevelBlockEntity(): BlockEntity | undefined;
     public getBlockEntity?(): BlockEntity | null;
     public getOrCreateBlockEntity?(): BlockEntity;
+  }
+
+  class BlockStatic {
+    public static get(typeId: string): Block;
   }
 
   class BlockEntity {
@@ -209,13 +213,17 @@ declare global {
   }
 
   class Item {
-    public static get(typeId: string): Item;
-
+    public static static: ItemStatic;
+    
     private constructor();
 
     public getId(): string;
 
     public clone(): Item;
+  }
+
+  class ItemStatic {
+    public static get(typeId: string): Item;
   }
 
 
@@ -236,5 +244,23 @@ declare global {
 
   class CommandSender {
     private constructor();
+  }
+
+  /**
+   * @deprecated
+   */
+  class Java {
+    public static type(t: string): unknown;
+  }
+
+  class ClassUtil {
+    private constructor();
+    public forName(name: string): JavaClass & unknown;
+  }
+
+  export const Class: ClassUtil;
+
+  class JavaClass {
+    public static static: any;
   }
 }
