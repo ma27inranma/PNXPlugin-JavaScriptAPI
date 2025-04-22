@@ -10,19 +10,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.ParticleEffect;
+import cn.nukkit.math.SimpleAxisAlignedBB;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Logger;
 import ma27inranma.javascript_api.command.CommandReloadScript;
 import ma27inranma.javascript_api.event.EventBus;
 import ma27inranma.javascript_api.event.EventListener;
 import ma27inranma.javascript_api.event.info.RegistriesInfo;
+import ma27inranma.javascript_api.js_class.JsScheduler;
 import ma27inranma.javascript_api.js_class.util.JsClsUtil;
 import ma27inranma.javascript_api.js_class.util.JsCommandUtil;
 import ma27inranma.javascript_api.js_class.util.JsLocationUtils;
+import ma27inranma.javascript_api.js_class.util.JsVector3Util;
 
 public class JavaScriptApiPlugin extends PluginBase {
   public static Logger logger;
@@ -107,11 +114,14 @@ public class JavaScriptApiPlugin extends PluginBase {
     Value jsRoot = context.getBindings("js");
 
     jsRoot.putMember("Api", new ApiRoot());
+    jsRoot.putMember("Vector3s", new JsVector3Util());
     jsRoot.putMember("Locations", new JsLocationUtils());
     jsRoot.putMember("Commands", new JsCommandUtil());
     jsRoot.putMember("Block", Block.class);
     jsRoot.putMember("Item", Item.class);
     jsRoot.putMember("Class", new JsClsUtil());
     jsRoot.putMember("ParticleEffect", ParticleEffect.class);
+    jsRoot.putMember("SimpleAxisAlignedBB", SimpleAxisAlignedBB.class);
+    jsRoot.putMember("Scheduler", new JsScheduler());
   }
 }

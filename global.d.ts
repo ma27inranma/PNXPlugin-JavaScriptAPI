@@ -12,7 +12,7 @@ declare global {
     public getServer(): Server;
     public getDefaultLevel(): Level;
     
-    public getInteractionActionEnum(): PlayerInteractActionEnum;
+    public getInteractActionEnum(): PlayerInteractActionEnum;
   }
 
   class Server {
@@ -169,18 +169,40 @@ declare global {
     rangeEnd: number;
   }
   
-  interface Vector3 {
+  interface JsVector3 {
     x: number,
     y: number,
     z: number
   }
 
-  class Location implements Vector3 {
+  class Vector3 implements JsVector3 {
     private constructor();
 
+    public x: number;
+    public y: number;
+    public z: number;
     public getX(): number;
     public getY(): number;
     public getZ(): number;
+    public setX(): number;
+    public setY(): number;
+    public setZ(): number;
+
+    public multiply(num: number): Vector3;
+    public add(x: number, y: number, z: number): Vector3;
+    public add(vec: Vector3): Vector3;
+    public dot(vec: Vector3): number;
+    public length(): number;
+    public lengthSquared(): number;
+    public distance(vec: Vector3): number;
+    public distanceSquared(vec: Vector3): number;
+    public distanceManhattan(vec: Vector3): number;
+  }
+
+  class Location implements Vector3 {
+    private constructor();
+
+    public getLevel(): Level | undefined;
     public getChunkX(): number;
     public getChunkY(): number;
     public getChunkZ(): number;
@@ -191,8 +213,9 @@ declare global {
 
     public getBlock(pos: Location): Block;
     public setBlock(pos: Location, block: Block): void;
-    public loadChunk(x: number, z: number): void
-    public addParticleEffect(location: Location, particle: ParticleEffect): void
+    public loadChunk(x: number, z: number): void;
+    public addParticleEffect(location: Location, particle: ParticleEffect): void;
+    public getNearbyEntities(bb: BoundingBox): Entity[];
   }
   
   class Block {
@@ -220,13 +243,17 @@ declare global {
   
   // Entiteis Begin
   
-  class Entity {
+  class Entity extends Location {
     private constructor();
   
     public getLocation(): Location;
     public getInventory?(): Inventory;
-    public setMotion(vec: Location): void;
+    public getDirectionVector(): Vector3;
+    public setMotion(vec: Vector3): void;
     public attack(damage: number): void;
+    public getIdentifier(): string;
+    public getBoundingBox(): BoundingBox;
+    public isLookinigAt(location: Vector3, tolerance: number, checkRaycast: boolean): boolean;
   }
   
   class Player extends Entity {
@@ -268,7 +295,7 @@ declare global {
   }
 
   /**
-   * @deprecated Not working
+   * @deprecated Not available
    */
   enum ParticleEffectStatic {
     ARROWSPELL,
@@ -413,13 +440,36 @@ declare global {
     WITHER_BOSS_INVULNERABLE
   }
 
+  /**
+   * @deprecated Not available
+   */
+  class SchedulerClass {
+    private constructor();
+
+    public runInterval(callback: () => void, delay: number);
+    public runTimeout(callback: () => void, interval: number);
+  }
+
+  export const Scheduler: SchedulerClass;
+
 
   //
+
+  /**
+   * @deprecated Not available
+   */
+  class Vector3Util {
+    private constructor();
+
+    public fromVector3(vec: JsVector3): Vector3;
+  }
+
+  export const Vector3s: Vector3Util;
 
   class Locations {
     private constructor();
 
-    public static fromVector3(vec: Vector3): Location;
+    public static fromVector3(vec: JsVector3): Location;
   }
 
   class Commands {
@@ -449,5 +499,18 @@ declare global {
 
   class JavaClass {
     public static: any;
+  }
+
+  /**
+   * @deprecated Not available
+   */
+  class BoundingBox {
+    private constructor();
+
+    public grow(x: number, y: number, z: number): BoundingBox;
+  }
+
+  class SimpleAxisAlignedBB extends BoundingBox {
+    public constructor(vec1: Vector3, vec2: Vector3);
   }
 }
