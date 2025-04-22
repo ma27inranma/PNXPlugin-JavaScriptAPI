@@ -83,12 +83,38 @@ declare global {
     private constructor();
   }
 
+  class EntityDamagedByEntityInfo {
+    private constructor();
+
+    public getEntity(): Entity;
+    public getDamager(): Entity;
+    public getDamage(): number;
+  }
+
+  class EntityDamagedByBlockInfo {
+    private constructor();
+
+    public getEntity(): Entity;
+    public getDamager(): Block;
+    public getDamage(): number;
+  }
+
+  class EntityDamageInfo {
+    private constructor();
+
+    public getEntity(): Entity;
+    public getDamage(): number;
+  }
+
   interface EventType {
     PlayerChat: PlayerChatEventInfo,
     Registries: RegistriesInfo,
     BlockBreak: BlockBreakInfo,
     BlockPlace: BlockPlaceInfo,
     PlayerInteract: PlayerInteractInfo,
+    EntityDamagedByEntity: EntityDamagedByEntityInfo,
+    EntityDamagedByBlock: EntityDamagedByBlockInfo,
+    EntityDamage: EntityDamageInfo,
     Loaded: NullEvent,
     Unload: NullEvent
   }
@@ -166,6 +192,7 @@ declare global {
     public getBlock(pos: Location): Block;
     public setBlock(pos: Location, block: Block): void;
     public loadChunk(x: number, z: number): void
+    public addParticleEffect(location: Location, particle: ParticleEffect): void
   }
   
   class Block {
@@ -197,8 +224,9 @@ declare global {
     private constructor();
   
     public getLocation(): Location;
-
     public getInventory?(): Inventory;
+    public setMotion(vec: Location): void;
+    public attack(damage: number): void;
   }
   
   class Player extends Entity {
@@ -230,6 +258,159 @@ declare global {
 
   class ItemStatic {
     public static get(typeId: string): Item;
+  }
+
+
+  class ParticleEffect {
+    private constructor();
+
+    public static static: typeof ParticleEffectStatic
+  }
+
+  /**
+   * @deprecated Not working
+   */
+  enum ParticleEffectStatic {
+    ARROWSPELL,
+    BALLOON_GAS,
+    BASIC_BUBBLE,
+    BASIC_BUBBLE_MANUAL,
+    BASIC_CRIT,
+    BASIC_FLAME,
+    BASIC_PORTAL,
+    BASIC_SMOKE,
+    BLEACH,
+    BLOCK_DESTRUCT,
+    BLOCK_SLIDE,
+    BLUE_FLAME,
+    CROP_GROWTH,
+    CANDLE_FLAME,
+    CROP_GROWTH_AREA,
+    BREAKING_ITEM_ICON,
+    BREAKING_ITEM_TERRAIN,
+    BUBBLE_COLUMN_BUBBLE,
+    BUBBLE_COLUMN_DOWN,
+    BUBBLE_COLUMN_UP,
+    CAMERA_SHOOT_EXPLOSION,
+    CAMPFIRE_SMOKE,
+    CAMPFIRE_SMOKE_TALL,
+    CAULDRONSPELL,
+    CAULDRON_BUBBLE,
+    CAULDRON_SPLASH,
+    COLORED_FLAME,
+    CONDUIT,
+    CONDUIT_ABSORB,
+    CONDUIT_ATTACK,
+    CRITICAL_HIT,
+    DOLPHIN_MOVE,
+    DRAGON_BREATH_FIRE,
+    DRAGON_BREATH_LINGERING,
+    DRAGON_BREATH_TRAIL,
+    DRAGON_DEATH_EXPLOSION,
+    DRAGON_DESTROY_BLOCK,
+    DRAGON_DYING_EXPLOSION,
+    DRIPSTONE_LAVA_DRIP,
+    DRIPSTONE_WATER_DRIP,
+    ELECTRIC_SPARK,
+    ENCHANTING_TABLE_PARTICLE,
+    ENDROD,
+    END_CHEST,
+    EVAPORATION_ELEPHANT_TOOTHPASTE,
+    EVOCATION_FANG,
+    EVOKER_SPELL,
+    EXPLOSION_CAULDRON,
+    EXPLOSION_DEATH,
+    EXPLOSION_EGG_DESTROY,
+    EXPLOSION_EYEOFENDER_DEATH,
+    EXPLOSION_LABTABLE_FIRE,
+    EXPLOSION_LEVEL,
+    EXPLOSION_MANUAL,
+    EYE_OF_ENDER_BUBBLE,
+    FALLING_BORDER_DUST,
+    FALLING_DUST,
+    FALLING_DUST_CONCRETE_POWDER,
+    FALLING_DUST_DRAGON_EGG,
+    FALLING_DUST_GRAVEL,
+    FALLING_DUST_RED_SAND,
+    FALLING_DUST_SAND,
+    FALLING_DUST_SCAFFOLDING,
+    FALLING_DUST_TOP_SNOW,
+    FISH_HOOK,
+    FISH_POS,
+    GLOW,
+    GUARDIAN_ATTACK,
+    GUARDIAN_WATER_MOVE,
+    HEART,
+    HONEY_DRIP,
+    HUGE_EXPLOSION_LAB_MISC,
+    HUGE_EXPLOSION_LEVEL,
+    ICE_EVAPORATION,
+    INK,
+    KNOCKBACK_ROAR,
+    LAB_TABLE_HEATBLOCK_DUST,
+    LAB_TABLE_MISC_MYSTICAL,
+    LARGE_EXPLOSION_LEVEL,
+    LAVA_DRIP,
+    LAVA_PARTICLE,
+    LLAMA_SPIT,
+    MAGNESIUM_SALTS,
+    MOBFLAME,
+    MOBFLAME_SINGLE,
+    MOBSPELL,
+    MOBSPELL_AMBIENT,
+    MOB_BLOCK_SPAWN,
+    MOB_PORTAL,
+    MYCELIUM_DUST,
+    NECTAR_DRIP,
+    NOTE,
+    OBSIDIAN_GLOW_DUST,
+    OBSIDIAN_TEAR,
+    PHANTOM_TRAIL,
+    PORTAL_DIRECTIONAL,
+    PORTAL_EAST_WEST,
+    PORTAL_NORTH_SOUTH,
+    PORTAL_REVERSE,
+    RAIN_SPLASH,
+    REDSTONE_ORE_DUST,
+    REDSTONE_REPEATER_DUST,
+    REDSTONE_TORCH_DUST,
+    REDSTONE_WIRE_DUST,
+    RISING_BORDER_DUST,
+    SCULK_CHARGE,
+    SCULK_CHARGE_POP,
+    SCULK_SENSOR_REDSTONE_PARTICLE,
+    SCULK_SOUL,
+    SHRIEK,
+    SHULKER_BULLET,
+    SILVERFISH_GRIEF,
+    SNOWFLAKE,
+    SOUL,
+    SONIC_EXPLOSION,
+    SPARKLER,
+    SPLASHPOTIONSPELL,
+    SPONGE_ABSORB_BUBBLE,
+    SPORE_BLOSSOM_AMBIENT_BLOCK_ACTOR,
+    SPORE_BLOSSOM_SHOWER,
+    SQUID_FLEE,
+    SQUID_INK_BUBBLE,
+    SQUID_MOVE,
+    STUNNED,
+    TOTEM,
+    TOTEM_MANUAL,
+    UNDERWATER_TORCH_BUBBLE,
+    VIBRATION_SIGNAL,
+    VILLAGER_ANGRY,
+    VILLAGER_HAPPY,
+    WARDEN_DIG_PARTICLE,
+    WATER_DRIP,
+    WATER_EVAPORATION_ACTOR,
+    WATER_EVAPORATION_BUCKET,
+    WATER_EVAPORATION_MANUAL,
+    WATER_SPASH_MANUAL,
+    WATER_SPLASH,
+    WATER_WAKE,
+    WAX,
+    WITHER_BOSS_INVULNERABLE
   }
 
 

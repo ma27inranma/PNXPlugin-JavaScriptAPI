@@ -13,6 +13,7 @@ import java.util.HashMap;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.ParticleEffect;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Logger;
 import ma27inranma.javascript_api.command.CommandReloadScript;
@@ -111,5 +112,6 @@ public class JavaScriptApiPlugin extends PluginBase {
     jsRoot.putMember("Block", Block.class);
     jsRoot.putMember("Item", Item.class);
     jsRoot.putMember("Class", new JsClsUtil());
+    jsRoot.putMember("ParticleEffect", ParticleEffect.class);
   }
 }
