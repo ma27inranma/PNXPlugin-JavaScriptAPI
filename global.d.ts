@@ -45,6 +45,7 @@ declare global {
 
     public registerItem(typeId: string, def: ItemDefinition): void;
     public registerBlock(typeId: string, def: BlockDefinition): void;
+    public registerEntity(typeId: string, def: EntityDefinition): void;
   }
 
   class BlockBreakInfo {
@@ -139,6 +140,15 @@ declare global {
     states?: BlockStateDefinition
   }
 
+  interface EntityDefinition {
+    entityType: keyof EntityTypeEnum;
+    onInitEntity: Value;
+    onSaveNbt: Value;
+    height: number;
+    width: number;
+    canBePushed: boolean;
+  }
+
   interface CreativeCategoryEnum {
     None: null,
     Equipment: null,
@@ -156,6 +166,11 @@ declare global {
   interface BlockTypeEnum {
     Solid: null,
     Transparent: null
+  }
+
+  interface EntityTypeEnum {
+    Entity: null,
+    Mob: null
   }
 
   interface BlockMaterialDefinition {

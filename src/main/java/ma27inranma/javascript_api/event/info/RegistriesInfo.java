@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import cn.nukkit.block.Block;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.item.Item;
 import cn.nukkit.registry.RegisterException;
 import cn.nukkit.registry.Registries;
+import cn.nukkit.registry.EntityRegistry.CustomEntityDefinition;
 import ma27inranma.javascript_api.JavaScriptApiPlugin;
 import ma27inranma.javascript_api.registry.block.BlockDefinition;
+import ma27inranma.javascript_api.registry.entity.EntityDefinition;
 import ma27inranma.javascript_api.registry.item.ItemDefinition;
 
 public class RegistriesInfo {
   public static ArrayList<Class<? extends Item>> itemClasses = new ArrayList<>();
   public static ArrayList<Class<? extends Block>> blockClasses = new ArrayList<>();
+  public static ArrayList<Class<? extends Entity>> entityClasses = new ArrayList<>();
 
   public RegistriesInfo(){
   }
@@ -30,6 +34,13 @@ public class RegistriesInfo {
     blockClasses.add(blockClass);
     
     Registries.BLOCK.registerCustomBlock(JavaScriptApiPlugin.instance, blockClass);
+  }
+
+  public void registerEntity(String typeId, Map<String, Object> obj) throws RegisterException, NoSuchMethodException, Throwable{
+    Class<? extends Entity> entityClass = EntityDefinition.newDefinition(typeId, obj).buildClassDef();
+    entityClasses.add(entityClass);
+
+    Registries.ENTITY.registerCustomEntity(JavaScriptApiPlugin.instance, new CustomEntityDefinition(typeId, "", true, true), entityClass);
   }
 
   @Override

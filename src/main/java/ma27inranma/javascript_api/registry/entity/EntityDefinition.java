@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.graalvm.polyglot.Value;
+
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockProperties;
 import cn.nukkit.block.BlockSolid;
@@ -14,9 +16,14 @@ import cn.nukkit.block.BlockTransparent;
 import cn.nukkit.block.customblock.CustomBlock;
 import cn.nukkit.block.property.type.BlockPropertyType;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.mob.EntityMob;
+import cn.nukkit.level.format.IChunk;
+import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.registry.RegisterException;
 import ma27inranma.javascript_api.JavaScriptApiPlugin;
+import ma27inranma.javascript_api.registry.interceptors.entity.InterceptorInitEntity;
+import ma27inranma.javascript_api.registry.interceptors.entity.InterceptorSaveNbt;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.field.FieldDescription;
 import net.bytebuddy.description.method.MethodDescription;
@@ -65,20 +72,50 @@ public class EntityDefinition {
       }
     }
 
+    if(obj.get("onInitEntity") instanceof Value onInitEntity){
+      definition.onInitEntity = onInitEntity;
+    }
+
+    if(obj.get("onSaveNbt") instanceof Value onSaveNbt){
+      definition.onSaveNbt = onSaveNbt;
+    }
+
+    if(obj.get("height") instanceof Number height){
+      definition.height = height.floatValue();
+    }
+
+    if(obj.get("width") instanceof Number width){
+      definition.width = width.floatValue();
+    }
+
     return definition;
   }
 
   public String typeId = "jsapi:null";
 
   public Class<? extends Entity> entityType = Entity.class;
-
-  public Class<? extends Block> subclass = BlockSolid.class;
+  public Value onInitEntity;
+  public Value onSaveNbt;
+  public float height = 0.1f;
+  public float width = 0.1f;
+  public boolean canBePushed = false;
 
   public EntityDefinition(){
 
   }
 
-  public Class<? extends Block> buildClassDef() throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException{
-    throw new RuntimeException("Not implemented");
+  public Class<? extends Entity> buildClassDef() throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, NoSuchFieldException{
+    DynamicType.Builder<? extends Entity> buddy = new ByteBuddy().subclass(this.entityType).implement(CustomEntity.class);
+
+    // buddy = buddy.defineConstructor(Modifier.PUBLIC).withParameters(IChunk.class, CompoundTag.class).intercept(MethodCall.invoke(this.entityType.getConstructor(IChunk.class, CompoundTag.class)).withArgument(0).withArgument(1));
+
+    buddy = buddy.method(named("getIdentifier")).intercept(FixedValue.value(this.typeId));
+    buddy = buddy.method(named("initEntity")).intercept(MethodDelegation.to(new InterceptorInitEntity(this, this.onInitEntity)));
+    buddy = buddy.method(named("saveNBT")).intercept(MethodDelegation.to(new InterceptorSaveNbt(this, this.onSaveNbt)));
+    buddy = buddy.method(named("getHeight")).intercept(FixedValue.value(this.height));
+    buddy = buddy.method(named("getWidth")).intercept(FixedValue.value(this.width));
+    buddy = buddy.method(named("canBePushed")).intercept(FixedValue.value(this.canBePushed));
+
+    return buddy.make().load(JavaScriptApiPlugin.instance.getPluginClassLoader(), ClassLoadingStrategy.Default.INJECTION).getLoaded();
   }
 }
